@@ -1,8 +1,11 @@
 package foodie.example.com.foodieserver;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -12,15 +15,31 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewGroup;
 
+import com.example.foodie.foodie.ViewHolder.MenuViewHolder;
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.rey.material.widget.TextView;
+import com.squareup.picasso.Picasso;
 
 import foodie.example.com.foodieserver.Common.Common;
+import foodie.example.com.foodieserver.Model.Catagory;
 
 public class Home extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     TextView txtFullName;
+
+    //Firebase
+    FirebaseDatabase database;
+    DatabaseReference categories;
+    FirebaseRecyclerAdapter<Catagory, com.example.foodie.foodie.ViewHolder.MenuViewHolder> adapter;
+
+    //View
+    RecyclerView recycler_menu;
+    RecyclerView.LayoutManager layoutManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +48,10 @@ public class Home extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("Menu Management");
         setSupportActionBar(toolbar);
+
+        //Init Firebase
+        database = FirebaseDatabase.getInstance();
+        categories = database.getReference("Category");
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -52,6 +75,39 @@ public class Home extends AppCompatActivity
         View headerView = navigationView.getHeaderView(0);
         txtFullName = (TextView)headerView.findViewById(R.id.txtFullName);
         txtFullName.setText(Common.currentUser.getName());
+
+        //Init View
+        recycler_menu = (RecyclerView)findViewById(R.id.recycler_menu);
+        recycler_menu.setHasFixedSize(true);
+        layoutManager = new LinearLayoutManager(this);
+        recycler_menu.setLayoutManager(layoutManager);
+
+        loadMenu();
+    }
+
+    private void loadMenu() {
+        adapter = new FirebaseRecyclerAdapter<Catagory, MenuViewHolder>(
+                Catagory.class,
+                R.layout.menu_item,
+                MenuViewHolder.class,
+                categories
+        ) {
+            @Override
+            protected void onBindViewHolder(@NonNull MenuViewHolder viewHolder, int position, @NonNull Catagory model) {
+                viewHolder.txtMenuName.setText(model.getName());
+                Picasso.with(Home.this).load(model.getImage())
+                        .into(viewHolder.imageView);
+            }
+
+            @NonNull
+            @Override
+            public MenuViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                return null;
+            }
+        };
+
+        adapter.notifyDataSetChanged(); //Refresh data if have data change
+        recycler_menu.setAdapter(adapter);
     }
 
     @Override
