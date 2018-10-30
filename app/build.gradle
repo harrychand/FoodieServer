@@ -32,6 +32,8 @@ dependencies {
     //compile 'info.hoang8f:fbutton:1.0.5'
     implementation 'com.google.firebase:firebase-core:16.0.+'
     implementation 'com.google.firebase:firebase-database:16.0.+'
+    implementation 'com.google.firebase:firebase-storage:16.0.+'
+    implementation 'com.google.firebase:firebase-auth:16.0.+'
     implementation 'com.rengwuxian.materialedittext:library:2.1.4'
     implementation 'com.squareup.picasso:picasso:2.5.2'
     implementation 'com.firebaseui:firebase-ui-database:3.2.2'
