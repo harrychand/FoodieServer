@@ -1,13 +1,13 @@
 package foodie.example.com.foodieserver.Model;
 
-public class Catagory {
+public class Category {
     private String Name;
     private String Image;
 
-    public Catagory() {
+    public Category() {
     }
 
-    public Catagory(String name, String image) {
+    public Category(String name, String image) {
         Name = name;
         Image = image;
     }

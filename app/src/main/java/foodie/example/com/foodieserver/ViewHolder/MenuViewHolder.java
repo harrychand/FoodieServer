@@ -1,4 +1,4 @@
-package com.example.foodie.foodie.ViewHolder;
+package foodie.example.com.foodieserver.ViewHolder;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
