@@ -43,24 +43,14 @@
         android:orientation="horizontal">
 
         <Button
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:id="@+id/btnSignUp"
-            android:background="@color/btnSignUp"
-            android:text="Sign Up"
-            android:layout_margin="8dp"
-            android:textColor="@android:color/white" />
-
-        <Button
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:id="@+id/btnSignIn"
-            android:text="Sign In"
-            android:background="@color/btnSignIn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_margin="8dp"
-            android:textColor="@android:color/white"/>
+            android:layout_weight="1"
+            android:background="@color/btnSignIn"
+            android:text="Sign In"
+            android:textColor="@android:color/white" />
 
     </LinearLayout>
 </RelativeLayout>
