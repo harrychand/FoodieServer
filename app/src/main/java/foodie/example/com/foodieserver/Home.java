@@ -35,7 +35,8 @@ import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.rengwuxian.materialedittext.MaterialEditText;
-import com.rey.material.widget.TextView;
+//import com.rey.material.widget.TextView;
+import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 
 import java.util.UUID;
@@ -105,6 +106,7 @@ public class Home extends AppCompatActivity
         //Set Name for user
         View headerView = navigationView.getHeaderView(0);
         txtFullName = (TextView)headerView.findViewById(R.id.txtFullName);
+        //txtFullName = (TextView)findViewById(R.id.txtFullName);
         txtFullName.setText(Common.currentUser.getName());
 
         //Init View
