@@ -1,14 +1,20 @@
 package foodie.example.com.foodieserver.ViewHolder;
 
 import android.support.v7.widget.RecyclerView;
+import android.view.ContextMenu;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import foodie.example.com.foodieserver.Common.Common;
 import foodie.example.com.foodieserver.Interface.ItemClickListener;
 import foodie.example.com.foodieserver.R;
 
-public class MenuViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+public class MenuViewHolder extends RecyclerView.ViewHolder implements
+        View.OnClickListener,
+        View.OnCreateContextMenuListener
+
+{
 
     public TextView txtMenuName;
     public ImageView imageView;
@@ -16,12 +22,12 @@ public class MenuViewHolder extends RecyclerView.ViewHolder implements View.OnCl
     private ItemClickListener itemClickListener;
 
     public MenuViewHolder (View itemView) {
-
         super (itemView);
 
         txtMenuName = (TextView) itemView.findViewById(R.id.menu_name);
         imageView = (ImageView) itemView.findViewById(R.id.menu_image);
 
+        itemView.setOnCreateContextMenuListener(this);
         itemView.setOnClickListener(this);
     }
 
@@ -32,5 +38,13 @@ public class MenuViewHolder extends RecyclerView.ViewHolder implements View.OnCl
     @Override
     public void onClick(View view){
         itemClickListener.onClick(view,getAdapterPosition(),false);
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu contextMenu, View view, ContextMenu.ContextMenuInfo contextMenuInfo) {
+        contextMenu.setHeaderTitle("Select the action");
+
+        contextMenu.add(0,0,getAdapterPosition(), Common.UPDATE);
+        contextMenu.add(0,0,getAdapterPosition(), Common.DELETE);
     }
 }
