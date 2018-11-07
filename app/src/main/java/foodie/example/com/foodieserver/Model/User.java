@@ -1,7 +1,7 @@
 package foodie.example.com.foodieserver.Model;
 
 public class User {
-    private String Name, Password, Phone, IsStaff;
+    private String Name, Password, Phone, IsStaff, restaurantId;
 
     public User(String name, String password) {
         Name = name;
@@ -41,5 +41,13 @@ public class User {
 
     public void setIsStaff(String isStaff) {
         IsStaff = isStaff;
+    }
+
+    public String getRestaurantId() {
+        return restaurantId;
+    }
+
+    public void setRestaurantId(String restaurantId) {
+        this.restaurantId = restaurantId;
     }
 }

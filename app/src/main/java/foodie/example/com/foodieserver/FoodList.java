@@ -75,7 +75,7 @@ public class FoodList extends AppCompatActivity {
 
         // initial firebase
         db=FirebaseDatabase.getInstance();
-        foodList=db.getReference("Food");
+        foodList=db.getReference("Restaurants").child(Common.currentUser.getRestaurantId()).child("detail").child("Food");
         storage=FirebaseStorage.getInstance();
         storageReference=storage.getReference();
 

@@ -82,7 +82,7 @@ public class Home extends AppCompatActivity
 
         //Init Firebase
         database = FirebaseDatabase.getInstance();
-        categories = database.getReference("Category");
+        categories = database.getReference("Restaurants").child(Common.currentUser.getRestaurantId()).child("detail").child("Category");
         storage = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
 

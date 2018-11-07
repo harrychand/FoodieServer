@@ -45,7 +45,7 @@ public class OrderStatus extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
         // initial Firebase
         database=FirebaseDatabase.getInstance();
-        requests=database.getReference("Requests");
+        requests=database.getReference("Restaurants").child(Common.currentUser.getRestaurantId()).child("Requests");
         // load Order from firebase
         loadOrders();
     }
