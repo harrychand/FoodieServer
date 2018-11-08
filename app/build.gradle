@@ -26,6 +26,9 @@ dependencies {
     implementation 'com.google.firebase:firebase-database:16.0.1'
     implementation 'com.google.firebase:firebase-storage:16.0.1'
     implementation 'com.google.firebase:firebase-auth:16.0.1'
+    implementation 'com.google.android.gms:play-services-location:10.2.0' //replace with service
+    implementation 'com.google.android.gms:play-services-maps:10.2.0'
+    //implementation 'com.google.android.gms:play-services:10.2.0'
     implementation 'com.rengwuxian.materialedittext:library:2.1.4'
     implementation 'com.squareup.picasso:picasso:2.5.2'
     implementation 'com.android.support:cardview-v7:27.0.2'
