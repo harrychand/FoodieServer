@@ -540,7 +540,6 @@ android.app.AlertDialog.Builder alertDialog = new android.app.AlertDialog.Builde
                                 mDialog.dismiss();
                                 User user = new User(edtName.getText().toString(),
                                         edtPassword.getText().toString(),
-                                        edtPhone.getText().toString(),
                                         edtSecureCode.getText().toString(),
                                         "true",
                                         "01",

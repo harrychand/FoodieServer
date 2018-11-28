@@ -9,10 +9,9 @@ public class User {
         Password = password;
     }
 
-    public User(String name, String password, String phone, String secureCode, String isStaff, String restaurantId, double rewardCash) {
+    public User(String name, String password, String secureCode, String isStaff, String restaurantId, double rewardCash) {
         Name = name;
         Password = password;
-        Phone = phone;
         SecureCode = secureCode;
         IsStaff = isStaff;
         this.restaurantId = restaurantId;
