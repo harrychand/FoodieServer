@@ -205,7 +205,7 @@ public class OrderStatus extends AppCompatActivity {
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         for (DataSnapshot postSnapShot:dataSnapshot.getChildren()){
                             Token token = postSnapShot.getValue(Token.class);
-                            Notification notification= new Notification("UTP","Your order"+key+"was updated by"+Common.currentUser.getName());
+                            Notification notification= new Notification("UTP","Your order "+key+" was updated by "+Common.currentUser.getName());
                             Sender content = new Sender(token.getToken(),notification);
 
                             mService.sendNotification(content)
