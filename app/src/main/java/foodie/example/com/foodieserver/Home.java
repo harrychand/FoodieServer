@@ -42,6 +42,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.jaredrummler.materialspinner.MaterialSpinner;
 import com.rengwuxian.materialedittext.MaterialEditText;
 //import com.rey.material.widget.TextView;
 import android.widget.TextView;
@@ -85,6 +86,7 @@ public class Home extends AppCompatActivity
     Uri saveUri;
 
     DrawerLayout drawer;
+    String restID[] = {"01","02","03","04","05","06"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -512,6 +514,9 @@ android.app.AlertDialog.Builder alertDialog = new android.app.AlertDialog.Builde
         final MaterialEditText edtName = (MaterialEditText)layout_pwd.findViewById(R.id.edtName);
         final MaterialEditText edtPassword = (MaterialEditText)layout_pwd.findViewById(R.id.edtPassword);
         final MaterialEditText edtSecureCode = (MaterialEditText)layout_pwd.findViewById(R.id.edtSecureCode);
+        final MaterialSpinner spinner= (MaterialSpinner)layout_pwd.findViewById(R.id.restaurant_spinner);
+        spinner.setItems("Village 1","Village 2","Village 3","Village 4","Village 5","Village 6"); // set item of spinner
+
 
         alertDialog.setView(layout_pwd);
         alertDialog.setPositiveButton("ADD", new DialogInterface.OnClickListener() {
@@ -542,7 +547,7 @@ android.app.AlertDialog.Builder alertDialog = new android.app.AlertDialog.Builde
                                         edtPassword.getText().toString(),
                                         edtSecureCode.getText().toString(),
                                         "true",
-                                        "01",
+                                        String.valueOf(restID[spinner.getSelectedIndex()]),
                                         0);
                                 table_user.child(edtPhone.getText().toString()).setValue(user);
                                 Toast.makeText(Home.this, "Account Registered", Toast.LENGTH_SHORT).show();
