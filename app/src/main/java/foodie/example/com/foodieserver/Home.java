@@ -304,15 +304,15 @@ public class Home extends AppCompatActivity
         super.onStop();
         adapter.stopListening();
     }
-
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (adapter != null) {
+            adapter.startListening();
+        }
+    }
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
     }
 
     @Override
@@ -352,11 +352,11 @@ public class Home extends AppCompatActivity
         } else if (id == R.id.nav_add_user) {
             showAddShipperDialog();
 
-        } else if (id == R.id.nav_sign_out) {
+        } else if (id == R.id.nav_log_out) {
             //Paper.book().destroy();
-            Intent signIn = new Intent(Home.this, SignIn.class);
-            signIn.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(signIn);
+            Intent logout = new Intent(Home.this, MainActivity.class);
+            logout.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(logout);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

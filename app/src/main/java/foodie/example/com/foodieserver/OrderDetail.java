@@ -45,9 +45,4 @@ public class OrderDetail extends AppCompatActivity {
         adapter.notifyDataSetChanged();
         lstFoods.setAdapter(adapter);
     }
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        this.finish();
-    }
 }

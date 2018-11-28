@@ -135,7 +135,7 @@ public class OrderStatus extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        adapter.stopListening();
+        if (adapter != null) adapter.stopListening();
     }
 
     /*this delete to delete Order
@@ -143,6 +143,7 @@ public class OrderStatus extends AppCompatActivity {
     private void deleteOrder(String key) {
         requests.child(key).removeValue(); // delete item from firebase json Requests
         adapter.notifyDataSetChanged();
+        loadOrders();
     }
 
     /*this method create dialog to update status  an save it in Firebase
@@ -255,5 +256,13 @@ public class OrderStatus extends AppCompatActivity {
                         Toast.makeText(OrderStatus.this, e.getMessage(),Toast.LENGTH_SHORT).show();
                     }
                 });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (adapter != null) {
+            adapter.startListening();
+        }
     }
 }
