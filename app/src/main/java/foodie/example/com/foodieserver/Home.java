@@ -21,19 +21,23 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
@@ -43,12 +47,17 @@ import com.rengwuxian.materialedittext.MaterialEditText;
 import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
+import dmax.dialog.SpotsDialog;
 import foodie.example.com.foodieserver.Common.Common;
 import foodie.example.com.foodieserver.Interface.ItemClickListener;
 import foodie.example.com.foodieserver.Model.Category;
-import foodie.example.com.foodieserver.Service.ListenOrder;
+import foodie.example.com.foodieserver.Model.Token;
+import foodie.example.com.foodieserver.Model.User;
+import foodie.example.com.foodieserver.ViewHolder.FoodViewHolder;
 import foodie.example.com.foodieserver.ViewHolder.MenuViewHolder;
 
 public class Home extends AppCompatActivity
@@ -121,10 +130,17 @@ public class Home extends AppCompatActivity
         recycler_menu.setLayoutManager(layoutManager);
 
         loadMenu();
-        //Call Service
-        Intent service = new Intent(Home.this, ListenOrder.class);
-        startService(service);
 
+        //send token
+        upOdateToken(FirebaseInstanceId.getInstance().getToken());
+
+    }
+
+    private void upOdateToken(String token){
+        FirebaseDatabase db = FirebaseDatabase.getInstance();
+        DatabaseReference tokens = db.getReference("Tokens");
+        Token data = new Token(token,true);
+        tokens.child(Common.currentUser.getPhone()).setValue(data);
     }
 
     private void showDialog() {
@@ -246,9 +262,14 @@ public class Home extends AppCompatActivity
     }
 
     private void loadMenu() {
-        adapter = new FirebaseRecyclerAdapter<Category, MenuViewHolder>(Category.class,R.layout.menu_item,MenuViewHolder.class,categories) {
+
+        FirebaseRecyclerOptions<Category> options = new FirebaseRecyclerOptions.Builder<Category>()
+                .setQuery(categories,Category.class)
+                .build();
+
+        adapter = new FirebaseRecyclerAdapter<Category, MenuViewHolder>(options) {
             @Override
-            protected void populateViewHolder(MenuViewHolder viewHolder, Category model, int position) {
+            protected void onBindViewHolder(@NonNull MenuViewHolder viewHolder, int position, @NonNull Category model) {
                 viewHolder.txtMenuName.setText(model.getName());
                 Picasso.with(Home.this).load(model.getImage())
                         .into(viewHolder.imageView);
@@ -256,7 +277,7 @@ public class Home extends AppCompatActivity
                 viewHolder.setItemClickListener(new ItemClickListener() {
                     @Override
                     public void onClick(View View, int position, boolean isLongClick) {
-                            //send Category If and start new
+                        //send Category If and start new
                         Intent foodList = new Intent(Home.this,FoodList.class);
                         foodList.putExtra("CategoryId",adapter.getRef(position).getKey());
                         startActivity(foodList);
@@ -264,10 +285,24 @@ public class Home extends AppCompatActivity
 
                 });
             }
-        };
 
+            @Override
+            public MenuViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+                View itemView = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.menu_item,parent,false);
+                return new MenuViewHolder(itemView);
+            }
+        };
+        adapter.startListening();
         adapter.notifyDataSetChanged(); //Refresh data if have data change
         recycler_menu.setAdapter(adapter);
+
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        adapter.stopListening();
     }
 
     @Override
@@ -314,9 +349,8 @@ public class Home extends AppCompatActivity
             Intent orderIntent = new Intent(Home.this,OrderStatus.class);
             startActivity(orderIntent);
 
-        } else if (id == R.id.nav_cart) {
-            //Intent cartIntent = new Intent(Home.this,Cart.class);
-            //startActivity(cartIntent);
+        } else if (id == R.id.nav_add_user) {
+            showAddShipperDialog();
 
         } else if (id == R.id.nav_sign_out) {
             //Paper.book().destroy();
@@ -464,5 +498,79 @@ public class Home extends AppCompatActivity
                     });
 
         }
+    }
+
+    private void showAddShipperDialog(){
+android.app.AlertDialog.Builder alertDialog = new android.app.AlertDialog.Builder(Home.this);
+        alertDialog.setTitle("ADD Shipper");
+        alertDialog.setMessage("Please fill all information");
+
+        LayoutInflater inflater = LayoutInflater.from(this);
+        View layout_pwd = inflater.inflate(R.layout.add_shipper_layout,null);
+
+        final MaterialEditText edtPhone = (MaterialEditText)layout_pwd.findViewById(R.id.edtPhone);
+        final MaterialEditText edtName = (MaterialEditText)layout_pwd.findViewById(R.id.edtName);
+        final MaterialEditText edtPassword = (MaterialEditText)layout_pwd.findViewById(R.id.edtPassword);
+        final MaterialEditText edtSecureCode = (MaterialEditText)layout_pwd.findViewById(R.id.edtSecureCode);
+
+        alertDialog.setView(layout_pwd);
+        alertDialog.setPositiveButton("ADD", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                final android.app.AlertDialog waitingDialog = new SpotsDialog(Home.this);
+                waitingDialog.show();
+                final DatabaseReference table_user = database.getReference("User");
+
+                if(Common.isConnectedToInternet(getBaseContext())) {
+
+
+                    final ProgressDialog mDialog = new ProgressDialog(Home.this);
+                    mDialog.setMessage("Please Wait");
+                    mDialog.show();
+
+                    table_user.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                            if (dataSnapshot.child(edtPhone.getText().toString()).exists()) {
+                                mDialog.dismiss();
+                                Toast.makeText(Home.this, "Phone number already exist", Toast.LENGTH_SHORT).show();
+                            } else {
+
+                                mDialog.dismiss();
+                                User user = new User(edtName.getText().toString(),
+                                        edtPassword.getText().toString(),
+                                        edtPhone.getText().toString(),
+                                        edtSecureCode.getText().toString(),
+                                        "true",
+                                        "01",
+                                        0);
+                                table_user.child(edtPhone.getText().toString()).setValue(user);
+                                Toast.makeText(Home.this, "Account Registered", Toast.LENGTH_SHORT).show();
+                                finish();
+
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+                } else {
+                    Toast.makeText(Home.this,"Please check your connection !!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            }
+        });
+
+        alertDialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        alertDialog.show();
     }
 }

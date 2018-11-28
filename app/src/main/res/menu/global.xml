@@ -8,10 +8,10 @@
             android:title="Menu" />
 
         <item
-            android:id="@+id/nav_cart"
-            android:icon="@drawable/ic_shopping_cart_black_24dp"
+            android:id="@+id/nav_add_user"
+            android:icon="@drawable/ic_local_shipping_black_24dp"
             android:iconTint="@android:color/white"
-            android:title="Cart" />
+            android:title="Add Shipper" />
 
         <item
             android:id="@+id/nav_orders"

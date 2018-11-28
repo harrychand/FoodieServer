@@ -1,4 +1,4 @@
-package com.example.foodie.foodie.Model;
+package foodie.example.com.foodieserver.Model;
 
 import java.util.List;
 

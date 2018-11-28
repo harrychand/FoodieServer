@@ -1,19 +1,27 @@
 package foodie.example.com.foodieserver.Common;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 
+import foodie.example.com.foodieserver.Model.Request;
 import foodie.example.com.foodieserver.Model.User;
+import foodie.example.com.foodieserver.Remote.APIService;
+import foodie.example.com.foodieserver.Remote.RetrofitClient;
 
 public class Common {
+    public static String PHONE_TEXT = "userPhone";
     public static User currentUser;
-    public static com.example.foodie.foodie.Model.Request currentRequest;
+    public static Request currentRequest;
     public static final String UPDATE = "Update";
     public static final String DELETE = "Delete";
     public static final int PICK_IMAGE_REQUEST = 71;
     public static final String baseUrl="https://maps.googleapis.com";
+    public static final String fcmUrl="https://fcm.googleapis.com/";
 
     /* this method to convert status value(0,1,2) to String that appear in status */
     public static String convertCodeToStatus(String status){
@@ -23,6 +31,26 @@ public class Common {
             return  "On My way";
         else
             return "Shipped";
+    }
+
+    public static APIService getFCMClient(){
+        return  RetrofitClient.getClient(fcmUrl).create(APIService.class);
+    }
+
+    public static boolean isConnectedToInternet(Context context){
+        ConnectivityManager connectivityManager = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        if(connectivityManager != null){
+
+            NetworkInfo[] info = connectivityManager.getAllNetworkInfo();
+            if(info != null){
+                for(int i=0; i<info.length;i++){
+                    if(info[i].getState() == NetworkInfo.State.CONNECTED)
+                        return true;
+                }
+            }
+        }
+        return false;
     }
     /*
     public static IGeoCoordinates getGeoCodeService(){
